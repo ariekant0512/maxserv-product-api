@@ -10,3 +10,14 @@ services:
   MaxServ\App\Controller\:
     resource: '../src/Controller'
     public: true
+
+  # De importer moet public zijn zodat het CLI-script (bin/import-products.php)
+  # 'm rechtstreeks uit de container kan halen.
+  MaxServ\App\Service\ProductImporter:
+    public: true
+
+  # Guzzle heeft geen losse service-definitie nodig; we registreren 'm hier
+  # zodat autowiring weet welke concrete klasse bij ClientInterface hoort.
+  GuzzleHttp\Client: ~
+
+  GuzzleHttp\ClientInterface: '@GuzzleHttp\Client'
