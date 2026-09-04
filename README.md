@@ -13,9 +13,19 @@ Now that all prerequisites are installed, we can initiate the project by followi
 
 1. Execute the `composer install` command to install the project dependencies.
 2. Execute the `docker-compose up -d` command to launch the application.
+3. Import at least 100 products by running `docker compose exec app php bin/import-products.php`.
 
 The project should now be operational and accessible at `http://localhost:8080`.
 You can also access phpMyAdmin at `http://localhost:8081`.
+
+> **Note for Windows users:** running `composer install` directly on Windows can turn the
+> `packages/app` and `packages/core` path repositories into NTFS junctions instead of
+> symlinks. The Linux container can't resolve those, which results in a
+> `Class "MaxServ\Core\Bootstrap" not found` error. If you run into this, delete the
+> `vendor` folder and install through a Linux container instead:
+> ```
+> docker run --rm -v "${PWD}:/app" -w /app composer:2.6 install
+> ```
 
 ### Application flow
 The application begins from a single entry point, `public/index.php`, which ensures composer autoloading and initiates a bootstrap process.
