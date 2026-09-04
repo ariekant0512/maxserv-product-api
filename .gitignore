@@ -30,3 +30,11 @@
 !/packages/core/**/*
 !/packages/app
 !/packages/app/**/*
+
+# Database
+!/docker
+!/docker/**/*
+
+# Scripts
+!/bin
+!/bin/**/*
