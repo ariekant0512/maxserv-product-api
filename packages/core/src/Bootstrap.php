@@ -19,6 +19,24 @@ readonly class Bootstrap
      */
     public function boot(): void
     {
+        $container = $this->buildContainer();
+
+        /** @var Router $router */
+        $router = $container->get(Router::class);
+        $router->match();
+    }
+
+    /**
+     * Bouwt en compileert de dependency injection container.
+     *
+     * Wordt gebruikt door boot() voor gewone webrequests, maar kan ook
+     * los aangeroepen worden door bijvoorbeeld een CLI-script dat geen
+     * router nodig heeft (zoals het importeren van producten).
+     *
+     * @throws Exception
+     */
+    public function buildContainer(): ContainerBuilder
+    {
         $container = new ContainerBuilder();
         $this->configure($container);
 
@@ -33,9 +51,7 @@ readonly class Bootstrap
 
         $container->compile();
 
-        /** @var Router $router */
-        $router = $container->get(Router::class);
-        $router->match();
+        return $container;
     }
 
     private function configure(ContainerBuilder $container): void
