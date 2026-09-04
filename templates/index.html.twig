@@ -1,8 +1,61 @@
-<html>
+<!DOCTYPE html>
+<html lang="nl">
 <head>
-    <title>MaxServ B.V. assignment</title>
+    <meta charset="UTF-8">
+    <title>MaxServ B.V. opdracht - Productoverzicht</title>
+    <style>
+        body { font-family: sans-serif; margin: 2rem; color: #222; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid #ddd; }
+        th { background: #f5f5f5; }
+        img.thumbnail { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; }
+        .price-old { text-decoration: line-through; color: #888; margin-right: 0.5rem; }
+        .price-new { font-weight: bold; }
+    </style>
 </head>
 <body>
-    <h1>{{ message }}</h1>
+    <h1>Productoverzicht</h1>
+
+    {% if products|length == 0 %}
+        <p>Er staan nog geen producten in de database. Draai eerst de import:
+            <code>docker compose exec app php bin/import-products.php</code>
+        </p>
+    {% else %}
+        <p>{{ products|length }} producten gevonden.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Afbeelding</th>
+                    <th>Titel</th>
+                    <th>Prijs</th>
+                    <th>Merk</th>
+                    <th>Categorie</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                    <tr>
+                        <td>
+                            {% if product.thumbnail %}
+                                <img class="thumbnail" src="{{ product.thumbnail }}" alt="{{ product.title }}">
+                            {% endif %}
+                        </td>
+                        <td>{{ product.title }}</td>
+                        <td>
+                            {% if product.discountPercentage > 0 %}
+                                <span class="price-old">&euro; {{ product.price|number_format(2, ',', '.') }}</span>
+                                <span class="price-new">&euro; {{ product.discountedPrice|number_format(2, ',', '.') }}</span>
+                            {% else %}
+                                <span class="price-new">&euro; {{ product.price|number_format(2, ',', '.') }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ product.brand ?? '-' }}</td>
+                        <td>{{ product.category }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 </body>
 </html>
